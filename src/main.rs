@@ -79,6 +79,16 @@ async fn main() {
         }
 
         if btn_delete.click() {
+            let mut records: Vec<DatabaseTable> = Vec::new();
+    let fetched_results = client.fetch_table("logins").await;
+        if let Ok(result) = fetched_results {
+            records = result;
+        // To update a ListView with these records:
+            // update_listview(&mut list_view, &records);
+            }
+        } else {
+        println!("Error fetching records from database: {} ",fetched_results.err().unwrap());
+        }
 
             if let Ok(deleted_count) = client.delete_record_by_id("logins", 5).await {
             // deleted_count is the number of records deleted
@@ -88,6 +98,12 @@ async fn main() {
         }
 
         if btn_update.click() {
+            // Update a record by id (Can only do one column at a time with this method)
+        if let Ok(updated_count) = client.update_record_by_id("messages", 5, "text", "New text").await {
+            // updated_count is the number of records updated
+        } else {
+            // Handle error
+        }
         }
 
         lbl_username.draw();
