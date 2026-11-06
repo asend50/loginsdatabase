@@ -1,7 +1,7 @@
 /*
-By: <Your Name Here>
+By: <Asen Doiron>
 Date: 2026-11-04
-Program Details: <Program Description Here>
+Program Details: <The purpose of this program is to allow the user to create, delete, and update logins in a database.>
 */
 
 mod ui;
@@ -35,7 +35,11 @@ async fn main() {
 
     let btn_exit = TextButton::new(925.0, 50.0, 60.0, 60.0, "X", RED, ORANGE, 30);
 
-    let btn_login = TextButton::new(650.0, 225.0, 200.0, 60.0, "LOGIN", GREEN, YELLOW, 30);
+    let btn_create = TextButton::new(650.0, 150.0, 200.0, 60.0, "CREATE", GREEN, YELLOW, 30);
+
+    let btn_delete = TextButton::new(650.0, 225.0, 200.0, 60.0, "DELETE", GREEN, YELLOW, 30);
+
+    let btn_update = TextButton::new(650.0, 300.0, 200.0, 60.0, "UPDATE", GREEN, YELLOW, 30);
 
     let mut txt_username = TextInput::new(250.0, 175.0, 300.0, 55.0, 40.0);
     let mut txt_password = TextInput::new(250.0, 300.0, 300.0, 55.0, 40.0);
@@ -50,7 +54,7 @@ async fn main() {
             break;
         }
 
-        if btn_login.click() {
+        if btn_create.click() {
             let new_record = DatabaseTable {
                 id: 0,
                 username: txt_username.get_text().to_string(),
@@ -72,6 +76,18 @@ async fn main() {
             } else {
                 println!("Error fetching records from database: {} ", fetched_results.err().unwrap());
             }
+        }
+
+        if btn_delete.click() {
+
+            if let Ok(deleted_count) = client.delete_record_by_id("logins", 5).await {
+            // deleted_count is the number of records deleted
+        } else {
+            // Handle error
+        }
+        }
+
+        if btn_update.click() {
         }
 
         lbl_username.draw();
