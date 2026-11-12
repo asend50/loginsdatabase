@@ -43,8 +43,12 @@ async fn main() {
 
     let mut txt_username = TextInput::new(250.0, 175.0, 300.0, 55.0, 40.0);
     let mut txt_password = TextInput::new(250.0, 300.0, 300.0, 55.0, 40.0);
+    let mut txt_updateusername = TextInput::new(250.0, 450.0, 300.0, 55.0, 40.0);
+    let mut txt_updatepassword = TextInput::new(250.0, 575.0, 300.0, 55.0, 40.0);
     txt_username.set_max_chars(15);
     txt_password.set_max_chars(15);
+    txt_updateusername.set_max_chars(15);
+    txt_updatepassword.set_max_chars(15);
 
     let client = create_database_client();
     loop {
@@ -97,10 +101,25 @@ async fn main() {
         }
 
         if btn_update.click() {
-            if let Ok(updated_count) = client.update_record_by_id("logins", 11, "username", &txt_username.get_text()).await {
-                // updated_count is the number of records updated
-            } else {
-                // Handle error
+            let mut records: Vec<DatabaseTable> = Vec::new();
+            let fetched_results = client.fetch_table("logins").await;
+            if let Ok(result) = fetched_results {
+                records = result;
+            }
+            for i in &records {
+                println!("ID: {}, Username: {}, Password: {}", i.id, i.username, i.password);
+                if txt_username.get_text() == i.username && txt_password.get_text() == i.password {
+                    if let Ok(updated_count) = client.update_record_by_id("logins", i.id as i64, "username", &txt_updateusername.get_text()).await {
+                        // updated_count is the number of records updated
+                    } else {
+                        // Handle error
+                    }
+                    if let Ok(updated_count) = client.update_record_by_id("logins", i.id as i64, "password", &txt_updatepassword.get_text()).await {
+                        // updated_count is the number of records updated
+                    } else {
+                        // Handle error
+                    }
+                }
             }
         }
 
@@ -108,6 +127,8 @@ async fn main() {
         lbl_password.draw();
         txt_username.draw();
         txt_password.draw();
+        txt_updateusername.draw();
+        txt_updatepassword.draw();
         next_frame().await;
     }
 }
